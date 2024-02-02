@@ -1,0 +1,69 @@
+# =============== #
+# Unity generated #
+# =============== #
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ibrary/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+
+# ===================================== #
+# Visual Studio / Rider generated files #
+# ===================================== #
+[Ee]xported[Oo]bj/
+.vs/
+.vscode/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.opendb
+*.VC.db
+
+# ========================== #
+# OS generated files to ignore #
+# ========================== #
+.DS_Store*
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ==================== #
+# Unity specific ignore #
+# ==================== #
+/[Aa]ssets/[Aa]sset[Ss]tore[Tt]ools*
+
+# ========================================= #
+# Ignore all auto-generated files from Unity #
+# ========================================= #
+/[Aa]ssets/.*\.meta
+/[Aa]ssets/.*\.mat
+/[Aa]ssets/.*\.asset
+/[Aa]ssets/.*\.prefs
+/[Aa]ssets/TextMesh*Pro/
+
+# =========================== #
+# Misc files to ignore #
+# =========================== #
+sysinfo.txt
+*.bak
+*.swp
+*.swp
+*.save
+*.orig
+
+# =========================== #
+# Ignore specific project files #
+# =========================== #
+# Add here any other file you wish to ignore that is specific to your project

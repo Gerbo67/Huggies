@@ -28,6 +28,7 @@
 *.pdb
 *.opendb
 *.VC.db
+.idea/
 
 # ========================== #
 # OS generated files to ignore #

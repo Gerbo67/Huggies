@@ -6,87 +6,104 @@ public class PlatformManager : MonoBehaviour
 {
     public GameObject playerPrefab;
     public GameObject platformPrefab;
-    public int poolSize = 10; // Tamaño del pool de plataformas
-    public float playerOffsetY = 1f; // Ajuste para colocar el jugador encima de la plataforma
+    public int poolSize = 3;
 
-    private GameObject[] platformPool;
-    private GameObject player;
-    private GameObject initialPlatform;
-    private float screenHeightInUnits;
-    private float screenWidthInUnits;
+    private GameObject[] _platformPool;
+    private GameObject _player;
+    private GameObject _initialPlatform;
+    private float _screenHeightInUnits;
+    private float _screenWidthInUnits;
+    private Rigidbody2D _playerRigidbody;
+    private float _heightPlayer;
 
     // Start is called before the first frame update
     void Start()
     {
-        screenHeightInUnits = Camera.main.orthographicSize * 2;
-        screenWidthInUnits = screenHeightInUnits * Screen.width / Screen.height;
-        ResizePrefabs();
+        _screenHeightInUnits = InitialGame.GetHeight();
+        _screenWidthInUnits = InitialGame.GetWidth();
         CreatePlatformPool();
         SpawnInitialPlatformAndPlayer();
-        StartGeneratingPlatforms();
     }
 
     // Update is called once per frame
     void Update()
     {
+        MovePlatformsBasedOnPlayer();
     }
 
-    void ResizePrefabs()
+    void MovePlatformsBasedOnPlayer()
     {
-        // Dimensiones para el jugador
-        Vector2 playerSize = new Vector2(screenHeightInUnits * 0.07f, screenHeightInUnits * 0.12f);
-        playerPrefab.transform.localScale =
-            new Vector3(playerSize.x / playerPrefab.GetComponent<SpriteRenderer>().sprite.bounds.size.x,
-                playerSize.y / playerPrefab.GetComponent<SpriteRenderer>().sprite.bounds.size.y, 1);
+        float playerVelocityY = _playerRigidbody.velocity.y;
 
-        // Dimensiones para las plataformas
-        Vector2 platformSize = new Vector2(screenWidthInUnits * 0.32f, screenHeightInUnits * 0.04f);
-        platformPrefab.transform.localScale =
-            new Vector3(platformSize.x / platformPrefab.GetComponent<SpriteRenderer>().sprite.bounds.size.x,
-                platformSize.y / platformPrefab.GetComponent<SpriteRenderer>().sprite.bounds.size.y, 1);
+        // Si el jugador está subiendo (saltando), mueve las plataformas hacia abajo para simular el ascenso
+        if (playerVelocityY > 0)
+        {
+            float moveSpeed = playerVelocityY * 2; // Move twice as fast when going up
+            foreach (GameObject platform in _platformPool)
+            {
+                if (platform.activeInHierarchy)
+                {
+                    platform.transform.position += Vector3.down * (moveSpeed * Time.deltaTime);
+                }
+            }
+        }
+        // Si el jugador está cayendo, opcionalmente podrías mover las plataformas hacia arriba para simular la caída
+        else if (playerVelocityY < 0)
+        {
+            foreach (GameObject platform in _platformPool)
+            {
+                if (platform.activeInHierarchy)
+                {
+                    platform.transform.position += Vector3.up * (Mathf.Abs(playerVelocityY) * Time.deltaTime);
+                }
+            }
+        }
+
+        // Recicla y reposiciona plataformas que salen de la vista
+        //RecycleAndRepositionPlatforms();
     }
+
 
     void CreatePlatformPool()
     {
-        platformPool = new GameObject[poolSize];
+        _platformPool = new GameObject[poolSize];
         for (int i = 0; i < poolSize; i++)
         {
-            platformPool[i] = Instantiate(platformPrefab, new Vector3(-100, -100, 0), Quaternion.identity);
-            platformPool[i].SetActive(false);
+            _platformPool[i] = Instantiate(platformPrefab, new Vector3(-100, -400, 0), Quaternion.identity);
+            _platformPool[i].SetActive(false);
         }
     }
 
     void SpawnInitialPlatformAndPlayer()
     {
         // Calcular la posición inicial de la plataforma basada en el porcentaje de la altura de la pantalla
-        float initialPlatformY = -screenHeightInUnits * 0.3f;
-        initialPlatform = Instantiate(platformPrefab, new Vector3(0, initialPlatformY, 0), Quaternion.identity);
+        float initialPlatformY = -_screenHeightInUnits * 0.4f;
+
+        StartGeneratingPlatforms(initialPlatformY);
 
         // Colocar al jugador encima de la plataforma inicial
-        float playerY = initialPlatformY + playerOffsetY;
-        player = Instantiate(playerPrefab, new Vector3(0, playerY, 0), Quaternion.identity);
+        float playerY = initialPlatformY + (InitialGame.GetHeightPlayer() * 2) +
+                        (InitialGame.GetHeightPlatform() * 2 + (InitialGame.GetHeightPlayer() * 0.1f));
+        _player = Instantiate(playerPrefab, new Vector3(0, playerY, 0), Quaternion.identity);
+        _playerRigidbody = _player.GetComponent<Rigidbody2D>();
     }
 
-    void StartGeneratingPlatforms()
+    void StartGeneratingPlatforms(float initialPlatformY)
     {
         // Altura entre plataformas basada en el porcentaje de la pantalla
-        float stepY = screenHeightInUnits * 0.05f;
+        float stepY = InitialGame.GetHeightPlayer() * 2; // Aumenta al 10% de la altura de la pantalla
 
         for (int i = 0; i < poolSize; i++)
         {
             // Obtén el ancho del sprite de la plataforma.
             SpriteRenderer spriteRenderer = platformPrefab.GetComponent<SpriteRenderer>();
             float platformWidth = spriteRenderer.sprite.bounds.size.x * platformPrefab.transform.localScale.x;
-        
+
             // Asegúrate de que el pivot del sprite esté en el borde si quieres alinearlas perfectamente.
-            float posX = screenWidthInUnits / 2 - platformWidth / 2; // Posición para el lado derecho de la pantalla
-            if (i % 2 == 1) // Si el índice es impar, coloca la plataforma en el lado izquierdo
-            {
-                posX = -posX;
-            }
+            float posX = 0; // Posición para el lado derecho de la pantalla
 
             // Calcula la posición Y de la nueva plataforma
-            float posY = initialPlatform.transform.position.y + (i + 1) * stepY;
+            float posY = initialPlatformY + (i + 1) * stepY;
 
             GameObject platform = GetPlatformFromPool();
             platform.transform.position = new Vector3(posX, posY, 0);
@@ -96,7 +113,7 @@ public class PlatformManager : MonoBehaviour
 
     GameObject GetPlatformFromPool()
     {
-        foreach (GameObject platform in platformPool)
+        foreach (GameObject platform in _platformPool)
         {
             if (!platform.activeInHierarchy)
             {

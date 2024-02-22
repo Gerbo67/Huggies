@@ -5,10 +5,9 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public float speed = 10f;
-    
+
     private Rigidbody2D _rb;
-    private float _jumpForce;
-    
+
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
@@ -16,7 +15,6 @@ public class PlayerMovement : MonoBehaviour
         {
             Debug.LogError("Failed to get Rigidbody2D component.");
         }
-        _jumpForce = InitialGame.JumpForce();
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -29,14 +27,21 @@ public class PlayerMovement : MonoBehaviour
             if (normal == Vector2.down)
             {
                 // El jugador está debajo de la plataforma, no aplicar fuerza de salto
+                Debug.Log("Collision detected -1");
                 return;
             }
 
             // Si el jugador choca con la parte superior de la plataforma, aplicar fuerza de salto
             if (normal == Vector2.up)
             {
-                // Aplica una fuerza de salto
-                _rb.AddForce(new Vector2(0, _jumpForce), ForceMode2D.Impulse);
+                Debug.Log("Collision detected 0");
+                // Llama a un método en PlatformManager para activar el movimiento de las plataformas hacia abajo
+                
+                PlatformManager platformManager = GameObject.Find("CanvasGame").GetComponent<PlatformManager>();
+                if (platformManager != null)
+                {
+                    platformManager.NotifyCollision();
+                }
             }
         }
     }

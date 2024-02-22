@@ -36,11 +36,6 @@ public class InitialGame : MonoBehaviour
     {
         return GetHeight() * 0.04f;
     }
-    
-    public static float JumpForce()
-    {
-        return (GetHeightPlayer() * 3) + (GetHeightPlatform() * 3.5f);
-    }
 
     void ResizePrefabs()
     {

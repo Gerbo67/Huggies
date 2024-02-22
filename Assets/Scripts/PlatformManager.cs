@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlatformManager : MonoBehaviour
 {
@@ -15,6 +17,9 @@ public class PlatformManager : MonoBehaviour
     private float _screenWidthInUnits;
     private Rigidbody2D _playerRigidbody;
     private float _heightPlayer;
+    private bool isColliding = false;
+    public float reboundSpeed = 5f; // Velocidad inicial del rebote
+    public float decelerationRate = 0.95f;
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +28,9 @@ public class PlatformManager : MonoBehaviour
         _screenWidthInUnits = InitialGame.GetWidth();
         CreatePlatformPool();
         SpawnInitialPlatformAndPlayer();
+
+        Button btn = GameObject.Find("BtnStart").GetComponent<Button>();
+        btn.onClick.AddListener(MovePlatformsBasedOnPlayer);
     }
 
     // Update is called once per frame
@@ -31,38 +39,39 @@ public class PlatformManager : MonoBehaviour
         MovePlatformsBasedOnPlayer();
     }
 
-    void MovePlatformsBasedOnPlayer()
+    public void NotifyCollision()
     {
-        float playerVelocityY = _playerRigidbody.velocity.y;
-
-        // Si el jugador está subiendo (saltando), mueve las plataformas hacia abajo para simular el ascenso
-        if (playerVelocityY > 0)
-        {
-            float moveSpeed = playerVelocityY * 2; // Move twice as fast when going up
-            foreach (GameObject platform in _platformPool)
-            {
-                if (platform.activeInHierarchy)
-                {
-                    platform.transform.position += Vector3.down * (moveSpeed * Time.deltaTime);
-                }
-            }
-        }
-        // Si el jugador está cayendo, opcionalmente podrías mover las plataformas hacia arriba para simular la caída
-        else if (playerVelocityY < 0)
-        {
-            foreach (GameObject platform in _platformPool)
-            {
-                if (platform.activeInHierarchy)
-                {
-                    platform.transform.position += Vector3.up * (Mathf.Abs(playerVelocityY) * Time.deltaTime);
-                }
-            }
-        }
-
-        // Recicla y reposiciona plataformas que salen de la vista
-        //RecycleAndRepositionPlatforms();
+        Debug.Log("Collision detected 2");
+        isColliding = true;
+        reboundSpeed = 5f; // Restablece la velocidad de rebote
     }
 
+    void MovePlatformsBasedOnPlayer()
+    {
+        foreach (GameObject platform in _platformPool)
+        {
+            if (platform.activeInHierarchy)
+            {
+                if (isColliding)
+                {
+                    // Mueve las plataformas hacia abajo y desacelera
+                    platform.transform.position += Vector3.down * (reboundSpeed * Time.deltaTime);
+                    reboundSpeed *= decelerationRate; // Desaceleración
+
+                    // Si la velocidad es muy baja, detén el movimiento y prepara para mover hacia arriba
+                    if (reboundSpeed < 0.1f)
+                    {
+                        isColliding = false;
+                    }
+                }
+                else
+                {
+                    // Mueve las plataformas hacia arriba a velocidad constante
+                    platform.transform.position += Vector3.up * (10f * Time.deltaTime);
+                }
+            }
+        }
+    }
 
     void CreatePlatformPool()
     {
@@ -77,9 +86,9 @@ public class PlatformManager : MonoBehaviour
     void SpawnInitialPlatformAndPlayer()
     {
         // Calcular la posición inicial de la plataforma basada en el porcentaje de la altura de la pantalla
-        float initialPlatformY = -_screenHeightInUnits * 0.4f;
+        StartGeneratingPlatforms();
 
-        StartGeneratingPlatforms(initialPlatformY);
+        float initialPlatformY = -_screenHeightInUnits * 0.2f;
 
         // Colocar al jugador encima de la plataforma inicial
         float playerY = initialPlatformY + (InitialGame.GetHeightPlayer() * 2) +
@@ -88,8 +97,9 @@ public class PlatformManager : MonoBehaviour
         _playerRigidbody = _player.GetComponent<Rigidbody2D>();
     }
 
-    void StartGeneratingPlatforms(float initialPlatformY)
+    void StartGeneratingPlatforms()
     {
+        float initialPlatformY = -_screenHeightInUnits * 0.9f;
         // Altura entre plataformas basada en el porcentaje de la pantalla
         float stepY = InitialGame.GetHeightPlayer() * 2; // Aumenta al 10% de la altura de la pantalla
 

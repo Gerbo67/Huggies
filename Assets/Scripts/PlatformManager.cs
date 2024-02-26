@@ -20,7 +20,7 @@ public class PlatformManager : MonoBehaviour
         float spaceBetweenPlatforms = 140 * pixelToUnit; // Espacio entre plataformas en unidades de mundo
 
         // Crear y posicionar las 3 plataformas iniciales
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 3; i++)
         {
             Vector3 position = new Vector3(0, startY + (i * spaceBetweenPlatforms), 0); // Posición para cada plataforma
             GameObject platform = Instantiate(platformPrefab, position, Quaternion.identity); // Crear plataforma
@@ -31,51 +31,58 @@ public class PlatformManager : MonoBehaviour
 
     void Update()
     {
-        if (directionChangeTimer > 0)
-        {
-            directionChangeTimer -= Time.deltaTime;
-            timeSinceDirectionChange += Time.deltaTime; // Incrementa el tiempo desde el último cambio de dirección
-        }
-        else
-        {
-            isMovingDown = false;
-        }
+        // Incrementa el tiempo desde el último cambio de dirección de manera más controlada
+        timeSinceDirectionChange += Time.deltaTime * 0.5f; // Reduce la velocidad de cambio
 
-        Vector3 movementDirection = isMovingDown ? Vector3.down : Vector3.up;
-
-        // Modificar la velocidad basándose en la dirección
-        float speedMultiplier;
-        const float initialSpeedFactor = 2f; // Factor de velocidad inicial común para ambas direcciones
         if (isMovingDown)
         {
-            // Hace que la bajada sea inicialmente rápida y luego desacelere.
-            // La desaceleración se hace menos pronunciada ajustando el factor en el denominador.
-            speedMultiplier =
-                Mathf.Max(initialSpeedFactor / (1 + timeSinceDirectionChange), 1f); // Asegura un mínimo de velocidad
+            // Modifica la fórmula de velocidad actual para desacelerar más suavemente
+            float currentVelocity = 2 - 1.5f * timeSinceDirectionChange; // Menor tasa de desaceleración
+
+            if (currentVelocity <= 0)
+            {
+                isMovingDown = false;
+                timeSinceDirectionChange = 0;
+            }
+            else
+            {
+                // Ajusta la fórmula para simular un movimiento parabólico más suave
+                float newYPosition = 0.18f * timeSinceDirectionChange - 0.75f * Mathf.Pow(timeSinceDirectionChange, 2);
+                foreach (GameObject platform in platforms)
+                {
+                    if (platform != null)
+                    {
+                        // Aplica el ajuste de posición de manera más suave
+                        platform.transform.position +=
+                            new Vector3(0, -newYPosition, 0); // Multiplicador ajustado para suavizar
+                    }
+                }
+            }
         }
         else
         {
-            // Hace que la subida acelere con el tiempo partiendo de una velocidad inicial.
-            speedMultiplier = initialSpeedFactor + timeSinceDirectionChange; // Acelera linealmente con el tiempo
-        }
+            // Ajusta la fórmula de movimiento hacia arriba para que sea más lenta
+            float newYPosition = 0.25f * 0.3f * Mathf.Pow(timeSinceDirectionChange, 2);
 
-        float currentSpeed = upwardSpeed * speedMultiplier;
-
-        foreach (GameObject platform in platforms)
-        {
-            if (platform != null)
+            foreach (GameObject platform in platforms)
             {
-                platform.transform.position += movementDirection * (currentSpeed * Time.deltaTime);
+                if (platform != null)
+                {
+                    // Realiza el ajuste de posición ascendente más suavemente
+                    platform.transform.position += new Vector3(0, newYPosition, 0);
+                }
             }
         }
     }
 
+
     public void ChangeDirectionTemporarily()
     {
-        directionChangeTimer = 0.5f; // Reiniciar el temporizador a 1 segundo (ajustado desde 3 segundos según tu código)
-        isMovingDown = !isMovingDown; // Invertir la dirección
-        timeSinceDirectionChange = 0f; // Reiniciar el tiempo desde el cambio de dirección cada vez
+        isMovingDown = true; // Se cambia a la lógica de alternar para mayor flexibilidad
+        timeSinceDirectionChange = 0;
 
+
+        /*
         // Calcular la posición para la nueva plataforma, que debería agregarse en el principio de la lista
         float cameraHeight = Camera.main.orthographicSize * 2;
         float pixelToUnit = cameraHeight / Screen.height; // Conversión de píxeles a unidades de mundo
@@ -107,12 +114,13 @@ public class PlatformManager : MonoBehaviour
         GameObject newPlatform = Instantiate(platformPrefab, position, Quaternion.identity);
         newPlatform.AddComponent<PlatformUnique>();
         platforms.Insert(0, newPlatform); // Añadir al principio de la lista
+        */
     }
 
     public void RemovePlatform()
     {
         //Debug.Log("Removing platform");
-        if(platforms.Count > 0)
+        if (platforms.Count > 0)
         {
             GameObject platformToRemove = platforms[platforms.Count - 1];
             PlatformUnique uniqueComponent = platformToRemove.GetComponent<PlatformUnique>();
@@ -120,11 +128,10 @@ public class PlatformManager : MonoBehaviour
             {
                 uniqueComponent.enabled = false; // Desactiva el componente antes de destruir
             }
+
             // Posiblemente desactivar otros componentes aquí
             Destroy(platformToRemove);
             platforms.RemoveAt(platforms.Count - 1);
         }
-
     }
-
 }

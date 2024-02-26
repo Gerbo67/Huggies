@@ -1,138 +1,130 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PlatformManager : MonoBehaviour
 {
-    public GameObject playerPrefab;
-    public GameObject platformPrefab;
-    public int poolSize = 3;
+    public GameObject platformPrefab; // Asigna este prefab en el editor de Unity
+    public float upwardSpeed = 4f; // Velocidad base a la que se mueven las plataformas hacia arriba
+    public List<GameObject> platforms = new List<GameObject>();
+    private float directionChangeTimer = 0f;
+    private bool isMovingDown = false;
+    private float timeSinceDirectionChange = 0f; // Controla la dirección del movimiento
 
-    private GameObject[] _platformPool;
-    private GameObject _player;
-    private GameObject _initialPlatform;
-    private float _screenHeightInUnits;
-    private float _screenWidthInUnits;
-    private Rigidbody2D _playerRigidbody;
-    private float _heightPlayer;
-    private bool isColliding = false;
-    public float reboundSpeed = 5f; // Velocidad inicial del rebote
-    public float decelerationRate = 0.95f;
-
-    // Start is called before the first frame update
     void Start()
     {
-        _screenHeightInUnits = InitialGame.GetHeight();
-        _screenWidthInUnits = InitialGame.GetWidth();
-        CreatePlatformPool();
-        SpawnInitialPlatformAndPlayer();
+        // Asumiendo que usas una cámara ortográfica
+        float cameraHeight = Camera.main.orthographicSize * 2;
+        float pixelToUnit = cameraHeight / Screen.height; // Conversión de píxeles a unidades de mundo
+        float startY = -Camera.main.orthographicSize * 0.3f; // -30% de la altura de la cámara en unidades de mundo
+        float spaceBetweenPlatforms = 140 * pixelToUnit; // Espacio entre plataformas en unidades de mundo
 
-        Button btn = GameObject.Find("BtnStart").GetComponent<Button>();
-        btn.onClick.AddListener(MovePlatformsBasedOnPlayer);
+        // Crear y posicionar las 3 plataformas iniciales
+        for (int i = 0; i < 5; i++)
+        {
+            Vector3 position = new Vector3(0, startY + (i * spaceBetweenPlatforms), 0); // Posición para cada plataforma
+            GameObject platform = Instantiate(platformPrefab, position, Quaternion.identity); // Crear plataforma
+            platform.AddComponent<PlatformUnique>();
+            platforms.Add(platform); // Añadir a la lista de plataformas
+        }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        MovePlatformsBasedOnPlayer();
-    }
-
-    public void NotifyCollision()
-    {
-        Debug.Log("Collision detected 2");
-        isColliding = true;
-        reboundSpeed = 5f; // Restablece la velocidad de rebote
-    }
-
-    void MovePlatformsBasedOnPlayer()
-    {
-        foreach (GameObject platform in _platformPool)
+        if (directionChangeTimer > 0)
         {
-            if (platform.activeInHierarchy)
-            {
-                if (isColliding)
-                {
-                    // Mueve las plataformas hacia abajo y desacelera
-                    platform.transform.position += Vector3.down * (reboundSpeed * Time.deltaTime);
-                    reboundSpeed *= decelerationRate; // Desaceleración
+            directionChangeTimer -= Time.deltaTime;
+            timeSinceDirectionChange += Time.deltaTime; // Incrementa el tiempo desde el último cambio de dirección
+        }
+        else
+        {
+            isMovingDown = false;
+        }
 
-                    // Si la velocidad es muy baja, detén el movimiento y prepara para mover hacia arriba
-                    if (reboundSpeed < 0.1f)
-                    {
-                        isColliding = false;
-                    }
-                }
-                else
-                {
-                    // Mueve las plataformas hacia arriba a velocidad constante
-                    platform.transform.position += Vector3.up * (10f * Time.deltaTime);
-                }
+        Vector3 movementDirection = isMovingDown ? Vector3.down : Vector3.up;
+
+        // Modificar la velocidad basándose en la dirección
+        float speedMultiplier;
+        const float initialSpeedFactor = 2f; // Factor de velocidad inicial común para ambas direcciones
+        if (isMovingDown)
+        {
+            // Hace que la bajada sea inicialmente rápida y luego desacelere.
+            // La desaceleración se hace menos pronunciada ajustando el factor en el denominador.
+            speedMultiplier =
+                Mathf.Max(initialSpeedFactor / (1 + timeSinceDirectionChange), 1f); // Asegura un mínimo de velocidad
+        }
+        else
+        {
+            // Hace que la subida acelere con el tiempo partiendo de una velocidad inicial.
+            speedMultiplier = initialSpeedFactor + timeSinceDirectionChange; // Acelera linealmente con el tiempo
+        }
+
+        float currentSpeed = upwardSpeed * speedMultiplier;
+
+        foreach (GameObject platform in platforms)
+        {
+            if (platform != null)
+            {
+                platform.transform.position += movementDirection * (currentSpeed * Time.deltaTime);
             }
         }
     }
 
-    void CreatePlatformPool()
+    public void ChangeDirectionTemporarily()
     {
-        _platformPool = new GameObject[poolSize];
-        for (int i = 0; i < poolSize; i++)
+        directionChangeTimer = 0.5f; // Reiniciar el temporizador a 1 segundo (ajustado desde 3 segundos según tu código)
+        isMovingDown = !isMovingDown; // Invertir la dirección
+        timeSinceDirectionChange = 0f; // Reiniciar el tiempo desde el cambio de dirección cada vez
+
+        // Calcular la posición para la nueva plataforma, que debería agregarse en el principio de la lista
+        float cameraHeight = Camera.main.orthographicSize * 2;
+        float pixelToUnit = cameraHeight / Screen.height; // Conversión de píxeles a unidades de mundo
+        float spaceBetweenPlatforms = 140 * pixelToUnit; // Espacio entre plataformas en unidades de mundo
+        Vector3 position;
+
+        if (platforms.Count > 0)
         {
-            _platformPool[i] = Instantiate(platformPrefab, new Vector3(-100, -400, 0), Quaternion.identity);
-            _platformPool[i].SetActive(false);
-        }
-    }
-
-    void SpawnInitialPlatformAndPlayer()
-    {
-        // Calcular la posición inicial de la plataforma basada en el porcentaje de la altura de la pantalla
-        StartGeneratingPlatforms();
-
-        float initialPlatformY = -_screenHeightInUnits * 0.2f;
-
-        // Colocar al jugador encima de la plataforma inicial
-        float playerY = initialPlatformY + (InitialGame.GetHeightPlayer() * 2) +
-                        (InitialGame.GetHeightPlatform() * 2 + (InitialGame.GetHeightPlayer() * 0.1f));
-        _player = Instantiate(playerPrefab, new Vector3(0, playerY, 0), Quaternion.identity);
-        _playerRigidbody = _player.GetComponent<Rigidbody2D>();
-    }
-
-    void StartGeneratingPlatforms()
-    {
-        float initialPlatformY = -_screenHeightInUnits * 0.9f;
-        // Altura entre plataformas basada en el porcentaje de la pantalla
-        float stepY = InitialGame.GetHeightPlayer() * 2; // Aumenta al 10% de la altura de la pantalla
-
-        for (int i = 0; i < poolSize; i++)
-        {
-            // Obtén el ancho del sprite de la plataforma.
-            SpriteRenderer spriteRenderer = platformPrefab.GetComponent<SpriteRenderer>();
-            float platformWidth = spriteRenderer.sprite.bounds.size.x * platformPrefab.transform.localScale.x;
-
-            // Asegúrate de que el pivot del sprite esté en el borde si quieres alinearlas perfectamente.
-            float posX = 0; // Posición para el lado derecho de la pantalla
-
-            // Calcula la posición Y de la nueva plataforma
-            float posY = initialPlatformY + (i + 1) * stepY;
-
-            GameObject platform = GetPlatformFromPool();
-            platform.transform.position = new Vector3(posX, posY, 0);
-        }
-    }
-
-
-    GameObject GetPlatformFromPool()
-    {
-        foreach (GameObject platform in _platformPool)
-        {
-            if (!platform.activeInHierarchy)
+            // Si ya hay plataformas en la lista, posiciona la nueva plataforma 140 unidades de mundo por encima de la más alta
+            float highestY = platforms[0].transform.position.y;
+            for (int i = 1; i < platforms.Count; i++)
             {
-                platform.SetActive(true);
-                return platform;
+                if (platforms[i].transform.position.y > highestY)
+                {
+                    highestY = platforms[i].transform.position.y;
+                }
             }
+
+            position = new Vector3(0, highestY + spaceBetweenPlatforms, 0);
+        }
+        else
+        {
+            // Si no hay plataformas, coloca la nueva plataforma en la posición inicial
+            float startY = -Camera.main.orthographicSize * 0.3f; // -30% de la altura de la cámara en unidades de mundo
+            position = new Vector3(0, startY, 0);
         }
 
-        // Si todas las plataformas están en uso, opcionalmente crea una nueva o espera hasta que una esté disponible
-        return null; // Aquí podrías manejar la lógica para esperar o crear una nueva plataforma
+        // Crear una nueva plataforma y añadirla al principio de la lista
+        GameObject newPlatform = Instantiate(platformPrefab, position, Quaternion.identity);
+        newPlatform.AddComponent<PlatformUnique>();
+        platforms.Insert(0, newPlatform); // Añadir al principio de la lista
     }
+
+    public void RemovePlatform()
+    {
+        //Debug.Log("Removing platform");
+        if(platforms.Count > 0)
+        {
+            GameObject platformToRemove = platforms[platforms.Count - 1];
+            PlatformUnique uniqueComponent = platformToRemove.GetComponent<PlatformUnique>();
+            if (uniqueComponent != null)
+            {
+                uniqueComponent.enabled = false; // Desactiva el componente antes de destruir
+            }
+            // Posiblemente desactivar otros componentes aquí
+            Destroy(platformToRemove);
+            platforms.RemoveAt(platforms.Count - 1);
+        }
+
+    }
+
 }

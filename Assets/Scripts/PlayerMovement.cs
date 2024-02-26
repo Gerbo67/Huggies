@@ -5,8 +5,11 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public float speed = 10f;
-
     private Rigidbody2D _rb;
+    // Variables para manejar el estado de los botones
+    bool isBothPressed = false;
+    bool isLeftFirst = false;
+    bool isRightFirst = false;
 
     void Start()
     {
@@ -27,48 +30,65 @@ public class PlayerMovement : MonoBehaviour
             if (normal == Vector2.down)
             {
                 // El jugador está debajo de la plataforma, no aplicar fuerza de salto
-                Debug.Log("Collision detected -1");
                 return;
             }
 
             // Si el jugador choca con la parte superior de la plataforma, aplicar fuerza de salto
             if (normal == Vector2.up)
             {
-                Debug.Log("Collision detected 0");
                 // Llama a un método en PlatformManager para activar el movimiento de las plataformas hacia abajo
-                
-                PlatformManager platformManager = GameObject.Find("CanvasGame").GetComponent<PlatformManager>();
+                PlatformManager platformManager = GameObject.Find("Generator").GetComponent<PlatformManager>();
                 if (platformManager != null)
                 {
-                    platformManager.NotifyCollision();
+                    platformManager.ChangeDirectionTemporarily();
                 }
             }
         }
     }
-
-
+    
     // Update is called once per frame
     void Update()
     {
-        if (Input.touchCount > 0 && _rb != null)
+        // Detectar presión de botones del teclado o toques en la pantalla
+        bool isLeftPressed = Input.GetKey(KeyCode.A) || (Input.touchCount > 0 && Input.GetTouch(0).position.x < Screen.width / 2);
+        bool isRightPressed = Input.GetKey(KeyCode.D) || (Input.touchCount > 0 && Input.GetTouch(0).position.x > Screen.width / 2);
+
+        // Determinar si ambos botones están presionados y cuál fue presionado primero
+        if (isLeftPressed && isRightPressed && !isBothPressed)
         {
-            Touch touch = Input.GetTouch(0);
+            isBothPressed = true;
+            isLeftFirst = isLeftPressed && !isRightPressed;
+            isRightFirst = isRightPressed && !isLeftPressed;
+            Debug.Log("Ambos (izquierda y derecha) están siendo presionados. Esperando soltar uno...");
+        }
+        else if (!isLeftPressed && !isRightPressed)
+        {
+            // Resetear si ambos botones se sueltan
+            isBothPressed = false;
+            isLeftFirst = false;
+            isRightFirst = false;
+        }
 
-            float halfScreen = Screen.width / 2;
-
-            // Movimiento horizontal
-            if (touch.position.x < halfScreen)
+        // Manejo del movimiento si solo uno está presionado o se suelta uno de los botones
+        if (!isBothPressed || (isBothPressed && (isLeftFirst || isRightFirst)))
+        {
+            if (isLeftPressed && !isRightPressed)
             {
                 Vector2 translation = Vector2.left * (speed * Time.deltaTime);
-                // Mover a la izquierda
                 transform.Translate(translation);
+                Debug.Log("Movimiento hacia la izquierda");
+                // Resetear para permitir movimiento en cualquier dirección nuevamente
+                isBothPressed = false;
             }
-            else if (touch.position.x > halfScreen)
+            else if (isRightPressed && !isLeftPressed)
             {
                 Vector2 translation = Vector2.right * (speed * Time.deltaTime);
-                // Mover a la derecha
                 transform.Translate(translation);
+                Debug.Log("Movimiento hacia la derecha");
+                // Resetear para permitir movimiento en cualquier dirección nuevamente
+                isBothPressed = false;
             }
         }
     }
+
 }

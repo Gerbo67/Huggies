@@ -10,21 +10,9 @@ public class PlatformUnique : MonoBehaviour
     {
     }
 
-    //collider
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("DestructorTag"))
-        {
-            PlatformManager
-                platformManager =
-                    FindObjectOfType<PlatformManager>();
-            if (platformManager != null)
-            {
-                // Elimina esta plataforma específica
-                platformManager.RemovePlatform();
-            }
-        }
+        
     }
 
 

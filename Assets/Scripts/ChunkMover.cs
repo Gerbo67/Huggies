@@ -6,18 +6,20 @@ public class ChunkMover : MonoBehaviour
 {
     public GameObject platformPrefab; // Referencia al prefab de la plataforma
     public float separation = 140f; // Separación vertical entre plataformas
-    public float speed = 5f;
+    public float jumpForce = 5f; // La fuerza del salto, ajusta según sea necesario
+    private Rigidbody2D _rb;
+    //public float speed = 5f;
 
     void Start()
     {
         // Genera las dos plataformas dentro del chunk
+        _rb = GetComponent<Rigidbody2D>();
         GeneratePlatforms();
     }
     
     void Update()
     {
-        // Mueve el chunk hacia abajo
-        transform.Translate(Vector3.down * speed * Time.deltaTime);
+        
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -30,21 +32,30 @@ public class ChunkMover : MonoBehaviour
     
     void GeneratePlatforms()
     {
-        float baseY = -20f; 
+        // La altura total del chunk basada en su escala
+        float chunkHeight = 3f;
 
-        float rangeY = 10f;
-
-        float posY1 = baseY + Random.Range(5, rangeY);
-
-        float posY2 = posY1 + separation;
-
-        // Crear posiciones de plataforma en relación al creador
-        Vector3 platformPosition1 = new Vector3(0, -posY1, 0);
-        Vector3 platformPosition2 = new Vector3(0, -posY2, 0);
+        // Crear posiciones de plataforma dentro del chunk
+        // Asumiendo que el pivote del chunk está en el centro,
+        // la posición Y de la plataforma superior será chunkHeight/2
+        // y la posición Y de la plataforma inferior será -chunkHeight/2
+        Vector3 upperPlatformPosition = new Vector3(0, chunkHeight / 2, 0);
+        Vector3 lowerPlatformPosition = new Vector3(0, -chunkHeight / 2, 0);
 
         // Instanciar las plataformas en relación al chunk
-        Instantiate(platformPrefab,  platformPosition1, Quaternion.identity, transform);
-        Instantiate(platformPrefab, platformPosition2, Quaternion.identity, transform);
+        // Los vectores de posición son locales debido a que el último parámetro es 'transform'
+        Instantiate(platformPrefab, upperPlatformPosition, Quaternion.identity, transform);
+        Instantiate(platformPrefab, lowerPlatformPosition, Quaternion.identity, transform);
+    }
+
+
+    public void ChunkJump()
+    {
+        // Resetear la velocidad para que los impulsos anteriores no se acumulen
+        _rb.velocity = Vector2.zero;
+
+        // Aplicar una nueva fuerza de salto hacia arriba
+        _rb.AddForce(Vector2.down * jumpForce, ForceMode2D.Impulse);
     }
 
 

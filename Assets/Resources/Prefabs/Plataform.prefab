@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 4245885807881435206}
   - component: {fileID: 2879537603451666846}
   - component: {fileID: 8826261537488653851}
-  - component: {fileID: 8725461882820922268}
+  - component: {fileID: -6163549470667767638}
+  - component: {fileID: 6854962536521203596}
   m_Layer: 0
   m_Name: Plataform
   m_TagString: Platform
@@ -28,7 +29,7 @@ RectTransform:
   m_GameObject: {fileID: 5101689924862422599}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -7185.998}
-  m_LocalScale: {x: 1.7990949, y: 0.39999998, z: 1}
+  m_LocalScale: {x: 1, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -133,9 +134,21 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.7990949, y: 0.04}
+  m_Size: {x: 1, y: 0.1}
   m_EdgeRadius: 0
---- !u!251 &8725461882820922268
+--- !u!114 &-6163549470667767638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5101689924862422599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6f4d746f88501b4e96991022c4deb2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!251 &6854962536521203596
 PlatformEffector2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

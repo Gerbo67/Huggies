@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Platform
   - DestructorTag
+  - Chunk
   layers:
   - Default
   - TransparentFX

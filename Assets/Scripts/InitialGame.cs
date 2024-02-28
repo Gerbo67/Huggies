@@ -6,6 +6,7 @@ public class InitialGame : MonoBehaviour
 {
     public GameObject platformPrefab;
     public GameObject playerPrefab;
+    public GameObject chunkPrefab;
 
     private static float _screenHeightInUnits;
     private float _screenWidthInUnits;
@@ -59,6 +60,11 @@ public class InitialGame : MonoBehaviour
         platformPrefab.transform.localScale = new Vector3(
             platformSize.x / platformPrefab.GetComponent<SpriteRenderer>().sprite.bounds.size.x,
             platformSize.y / platformPrefab.GetComponent<SpriteRenderer>().sprite.bounds.size.y, 1);
+        
+        // Dimensiones para el chunk (contenedor de plataformas) ancho de la pantalla y 1/4 de la altura
+        chunkPrefab.transform.localScale = new Vector3(
+            _screenWidthInUnits / chunkPrefab.GetComponent<SpriteRenderer>().sprite.bounds.size.x,
+            _screenHeightInUnits / 4 / chunkPrefab.GetComponent<SpriteRenderer>().sprite.bounds.size.y, 1);
 
         // Ajustar collider para el jugador
         BoxCollider2D playerCollider = playerPrefab.GetComponent<BoxCollider2D>();
@@ -80,6 +86,17 @@ public class InitialGame : MonoBehaviour
 
             platformCollider.size = new Vector2(colliderWidthPlatform, colliderHeightPlatform);
             platformCollider.offset = new Vector2(0, platformSize.y / 2 - colliderHeightPlatform / 2);
+        }
+        
+        // Ajustar collider para el chunk
+        BoxCollider2D chunkCollider = chunkPrefab.GetComponent<BoxCollider2D>();
+        if (chunkCollider != null)
+        {
+            float colliderHeightChunk = _screenHeightInUnits / 4 * 0.1f; // 10% del alto del chunk
+            float colliderWidthChunk = _screenWidthInUnits; // El ancho del collider igual al ancho de la pantalla
+
+            chunkCollider.size = new Vector2(colliderWidthChunk, colliderHeightChunk);
+            chunkCollider.offset = new Vector2(0, _screenHeightInUnits / 4 / 2 - colliderHeightChunk / 2);
         }
     }
 

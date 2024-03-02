@@ -60,8 +60,8 @@ PlayerSettings:
   iosUseCustomAppBackgroundBehavior: 0
   allowedAutorotateToPortrait: 1
   allowedAutorotateToPortraitUpsideDown: 1
-  allowedAutorotateToLandscapeRight: 1
-  allowedAutorotateToLandscapeLeft: 1
+  allowedAutorotateToLandscapeRight: 0
+  allowedAutorotateToLandscapeLeft: 0
   useOSAutorotation: 1
   use32BitDisplayBuffer: 1
   preserveFramebufferAlpha: 0
@@ -140,9 +140,7 @@ PlayerSettings:
   visionOSBundleVersion: 1.0
   tvOSBundleVersion: 1.0
   bundleVersion: 1.0.2
-  preloadedAssets:
-  - {fileID: 6060076847227911191, guid: 28de248235748104ea0ba2fdbbfe7206, type: 2}
-  - {fileID: 11400000, guid: 3355dd1362fb42b47a6fafff32740b94, type: 2}
+  preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -292,12 +290,20 @@ PlayerSettings:
   m_BuildTargetPlatformIcons:
   - m_BuildTarget: Android
     m_Icons:
+<<<<<<< Updated upstream
     - m_Textures: []
+=======
+    - m_Textures:
+      - {fileID: 2800000, guid: 7534b0662855a504ead5d83a2a79f8ba, type: 3}
+      - {fileID: 2800000, guid: 5b56367008ef10148a43efe47b8b1937, type: 3}
+>>>>>>> Stashed changes
       m_Width: 432
       m_Height: 432
       m_Kind: 2
       m_SubKind: 
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: 7534b0662855a504ead5d83a2a79f8ba, type: 3}
+      - {fileID: 0}
       m_Width: 324
       m_Height: 324
       m_Kind: 2
@@ -322,62 +328,122 @@ PlayerSettings:
       m_Height: 81
       m_Kind: 2
       m_SubKind: 
+<<<<<<< Updated upstream
     - m_Textures: []
+=======
+    - m_Textures:
+      - {fileID: 2800000, guid: 5b56367008ef10148a43efe47b8b1937, type: 3}
+>>>>>>> Stashed changes
       m_Width: 192
       m_Height: 192
       m_Kind: 1
       m_SubKind: 
+<<<<<<< Updated upstream
     - m_Textures: []
+=======
+    - m_Textures:
+      - {fileID: 0}
+>>>>>>> Stashed changes
       m_Width: 144
       m_Height: 144
       m_Kind: 1
       m_SubKind: 
+<<<<<<< Updated upstream
     - m_Textures: []
+=======
+    - m_Textures:
+      - {fileID: 0}
+>>>>>>> Stashed changes
       m_Width: 96
       m_Height: 96
       m_Kind: 1
       m_SubKind: 
+<<<<<<< Updated upstream
     - m_Textures: []
+=======
+    - m_Textures:
+      - {fileID: 0}
+>>>>>>> Stashed changes
       m_Width: 72
       m_Height: 72
       m_Kind: 1
       m_SubKind: 
+<<<<<<< Updated upstream
     - m_Textures: []
+=======
+    - m_Textures:
+      - {fileID: 0}
+>>>>>>> Stashed changes
       m_Width: 48
       m_Height: 48
       m_Kind: 1
       m_SubKind: 
+<<<<<<< Updated upstream
     - m_Textures: []
+=======
+    - m_Textures:
+      - {fileID: 0}
+>>>>>>> Stashed changes
       m_Width: 36
       m_Height: 36
       m_Kind: 1
       m_SubKind: 
+<<<<<<< Updated upstream
     - m_Textures: []
+=======
+    - m_Textures:
+      - {fileID: 2800000, guid: 5b56367008ef10148a43efe47b8b1937, type: 3}
+>>>>>>> Stashed changes
       m_Width: 192
       m_Height: 192
       m_Kind: 0
       m_SubKind: 
+<<<<<<< Updated upstream
     - m_Textures: []
+=======
+    - m_Textures:
+      - {fileID: 0}
+>>>>>>> Stashed changes
       m_Width: 144
       m_Height: 144
       m_Kind: 0
       m_SubKind: 
+<<<<<<< Updated upstream
     - m_Textures: []
+=======
+    - m_Textures:
+      - {fileID: 0}
+>>>>>>> Stashed changes
       m_Width: 96
       m_Height: 96
       m_Kind: 0
       m_SubKind: 
+<<<<<<< Updated upstream
     - m_Textures: []
+=======
+    - m_Textures:
+      - {fileID: 0}
+>>>>>>> Stashed changes
       m_Width: 72
       m_Height: 72
       m_Kind: 0
       m_SubKind: 
+<<<<<<< Updated upstream
     - m_Textures: []
+=======
+    - m_Textures:
+      - {fileID: 0}
+>>>>>>> Stashed changes
       m_Width: 48
       m_Height: 48
       m_Kind: 0
       m_SubKind: 
+<<<<<<< Updated upstream
     - m_Textures: []
+=======
+    - m_Textures:
+      - {fileID: 0}
+>>>>>>> Stashed changes
       m_Width: 36
       m_Height: 36
       m_Kind: 0

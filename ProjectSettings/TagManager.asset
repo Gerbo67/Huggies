@@ -6,6 +6,11 @@ TagManager:
   tags:
   - Platform
   - DestructorTag
+<<<<<<< Updated upstream
+=======
+  - Chunk
+  - CreatorTag
+>>>>>>> Stashed changes
   layers:
   - Default
   - TransparentFX

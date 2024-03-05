@@ -1,19 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class ChunkMover : MonoBehaviour
 {
-<<<<<<< Updated upstream
-    public GameObject platformPrefab; // Referencia al prefab de la plataforma
-    public float separation = 140f; // Separación vertical entre plataformas
-    public float speed = 5f;
-
-    void Start()
-    {
-        // Genera las dos plataformas dentro del chunk
-        GeneratePlatforms();
-=======
     public GameObject platformPrefab;
     public float jumpForce = 5f;
     public int gridWidth = 4;
@@ -24,22 +16,28 @@ public class ChunkMover : MonoBehaviour
     private List<Vector2> _gridPositions = new List<Vector2>();
     private Rigidbody2D _rb;
 
+    private Rigidbody2D leaderRb; // Variable para almacenar el Rigidbody2D del líder
+
 
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
+        _rb.gravityScale = 0; // Desactiva la gravedad
+
+        // Intenta obtener el componente Rigidbody2D del líder
+        leaderRb = GameObject.FindGameObjectWithTag("LeaderTag").GetComponent<Rigidbody2D>();
+
         GenerateGrid();
         PlacePlatforms();
->>>>>>> Stashed changes
     }
 
-    void Update()
+    private void FixedUpdate()
     {
-<<<<<<< Updated upstream
-        // Mueve el chunk hacia abajo
-        transform.Translate(Vector3.down * speed * Time.deltaTime);
-=======
->>>>>>> Stashed changes
+        // Usa el Rigidbody2D obtenido del líder
+        if (leaderRb != null)
+        {
+            _rb.velocity = leaderRb.velocity;
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -47,10 +45,10 @@ public class ChunkMover : MonoBehaviour
         if (other.CompareTag("DestructorTag"))
         {
             Destroy(gameObject); // Destruye el chunk al colisionar con el destructor
-            
+
             // Genera un nuevo chunk
             GameObject chunk = GameObject.FindGameObjectWithTag("CreatorTag");
-            
+
             if (chunk != null)
             {
                 chunk.GetComponent<ChunkSpawner>().SpawnChunk(false);
@@ -60,23 +58,6 @@ public class ChunkMover : MonoBehaviour
 
     void GenerateGrid()
     {
-<<<<<<< Updated upstream
-        float baseY = -20f; 
-
-        float rangeY = 10f;
-
-        float posY1 = baseY + Random.Range(5, rangeY);
-
-        float posY2 = posY1 + separation;
-
-        // Crear posiciones de plataforma en relación al creador
-        Vector3 platformPosition1 = new Vector3(0, -posY1, 0);
-        Vector3 platformPosition2 = new Vector3(0, -posY2, 0);
-
-        // Instanciar las plataformas en relación al chunk
-        Instantiate(platformPrefab,  platformPosition1, Quaternion.identity, transform);
-        Instantiate(platformPrefab, platformPosition2, Quaternion.identity, transform);
-=======
         // Calcula el tamaño disponible para el grid descontando los márgenes
         float chunkWidth = transform.localScale.x - margin * (gridWidth + 1);
         float chunkHeight = transform.localScale.y - margin * (gridHeight + 1);
@@ -111,7 +92,8 @@ public class ChunkMover : MonoBehaviour
             foreach (var pos in availablePositions)
             {
                 int column = (int)((pos.x + transform.localScale.x / 2) / (_gridBoxWidth + margin)) % gridWidth;
-                if (!usedColumns.Contains(column) && !usedYPositions.Contains(pos.y)) // Verifica si la columna y la posición Y no han sido usadas
+                if (!usedColumns.Contains(column) &&
+                    !usedYPositions.Contains(pos.y)) // Verifica si la columna y la posición Y no han sido usadas
                 {
                     possiblePositions.Add(pos);
                 }
@@ -120,10 +102,13 @@ public class ChunkMover : MonoBehaviour
             if (possiblePositions.Count > 0)
             {
                 Vector2 gridPosition = possiblePositions[Random.Range(0, possiblePositions.Count)];
-                GameObject platform = Instantiate(platformPrefab, transform.position + new Vector3(gridPosition.x, gridPosition.y, 0), Quaternion.identity, transform);
-        
+                GameObject platform = Instantiate(platformPrefab,
+                    transform.position + new Vector3(gridPosition.x, gridPosition.y, 0), Quaternion.identity,
+                    transform);
+
                 // Ajusta el tamaño de la plataforma
-                platform.transform.localScale = new Vector3(_gridBoxWidth - margin * (gridWidth) / (gridWidth - 1), _gridBoxHeight - margin * (gridHeight) / (gridHeight - 1.2f), 1);
+                platform.transform.localScale = new Vector3(_gridBoxWidth - margin * (gridWidth) / (gridWidth - 1),
+                    _gridBoxHeight - margin * (gridHeight) / (gridHeight - 1.2f), 1);
 
                 // Ajuste tamaño del collider
                 BoxCollider2D platformCollider = platform.GetComponent<BoxCollider2D>();
@@ -135,22 +120,13 @@ public class ChunkMover : MonoBehaviour
                 }
 
 
-                int usedColumn = (int)((gridPosition.x + transform.localScale.x / 2) / (_gridBoxWidth + margin)) % gridWidth; // Calcula la columna usada
+                int usedColumn = (int)((gridPosition.x + transform.localScale.x / 2) / (_gridBoxWidth + margin)) %
+                                 gridWidth; // Calcula la columna usada
                 usedColumns.Add(usedColumn); // Añade la columna usada al conjunto
                 usedYPositions.Add(gridPosition.y); // Añade la posición Y usada al conjunto
-        
+
                 availablePositions.Remove(gridPosition); // Elimina la posición usada de la lista de disponibles.
             }
         }
-    }
-
-
-
-    
-    public void ChunkJump()
-    {
-        _rb.velocity = Vector2.zero;
-        _rb.AddForce(Vector2.down * jumpForce, ForceMode2D.Impulse);
->>>>>>> Stashed changes
     }
 }

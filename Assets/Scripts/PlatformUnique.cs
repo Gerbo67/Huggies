@@ -12,9 +12,6 @@ public class PlatformUnique : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-<<<<<<< Updated upstream
-        
-=======
         if (collision.gameObject.CompareTag("Player"))
         {
             Vector2 normal = collision.contacts[0].normal;
@@ -24,16 +21,11 @@ public class PlatformUnique : MonoBehaviour
                 //print
                 Debug.Log("Player collided with platform");
                 // Get object with tag
-                GameObject[] chunk = GameObject.FindGameObjectsWithTag("Chunk");
+                GameObject leader = GameObject.FindGameObjectWithTag("LeaderTag");
 
-                // Jump all chunks
-                foreach (GameObject chunkObject in chunk)
-                {
-                    chunkObject.GetComponent<ChunkMover>().ChunkJump();
-                }
+                leader.GetComponent<LeaderMovement>().ChunkJump();
             }
         }
->>>>>>> Stashed changes
     }
 
 

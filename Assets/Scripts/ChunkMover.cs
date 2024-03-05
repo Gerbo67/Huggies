@@ -6,9 +6,12 @@ public class ChunkMover : MonoBehaviour
 {
     public GameObject platformPrefab; // Referencia al prefab de la plataforma
     public float separation = 140f; // Separación vertical entre plataformas
-    public float jumpForce = 5f; // La fuerza del salto, ajusta según sea necesario
+    public float jumpForce = 3f; // La fuerza del salto, ajusta según sea necesario
     private Rigidbody2D _rb;
     //public float speed = 5f;
+
+    public float normalGravityScale = 1f;
+    public float slowGravityScale = 0f;
 
     void Start()
     {
@@ -19,7 +22,14 @@ public class ChunkMover : MonoBehaviour
     
     void Update()
     {
-        
+        if (Input.GetKey(KeyCode.E))
+        {
+            _rb.gravityScale = slowGravityScale;
+        }
+        else
+        {
+            _rb.gravityScale = normalGravityScale;
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -33,7 +43,7 @@ public class ChunkMover : MonoBehaviour
     void GeneratePlatforms()
     {
         // La altura total del chunk basada en su escala
-        float chunkHeight = 3f;
+        float chunkHeight = 5f;
 
         // Crear posiciones de plataforma dentro del chunk
         // Asumiendo que el pivote del chunk está en el centro,

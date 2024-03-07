@@ -5,11 +5,6 @@ using UnityEngine;
 
 public class PlatformUnique : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
@@ -26,11 +21,5 @@ public class PlatformUnique : MonoBehaviour
                 leader.GetComponent<LeaderMovement>().ChunkJump();
             }
         }
-    }
-
-
-    // Update is called once per frame
-    void Update()
-    {
     }
 }

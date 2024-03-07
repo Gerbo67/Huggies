@@ -9,8 +9,8 @@ public class MovimientoJugador : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float horizontalInput = Input.GetAxis("Horizontal"); // Detecta el movimiento horizontal
-        Vector3 moveDirection = new Vector3(horizontalInput, 0, 0); // Define la dirección del movimiento
-        transform.Translate(moveDirection * speed * Time.deltaTime); // Mueve el escenario en la dirección opuesta para simular el movimiento del jugador
+        float horizontalInput = Input.GetAxis("Horizontal");
+        Vector3 moveDirection = new Vector3(horizontalInput, 0, 0);
+        transform.Translate(moveDirection * speed * Time.deltaTime);
     }
 }

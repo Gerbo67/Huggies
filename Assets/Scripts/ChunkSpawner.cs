@@ -5,49 +5,44 @@ using UnityEngine;
 public class ChunkSpawner : MonoBehaviour
 {
     public GameObject chunkPrefab;
-    public float spawnRate = 2f; // Tiempo en segundos entre spawns
-    private float nextTimeToSpawn = 5f;
-    private bool isInitial = true;
+    private bool _isInitial = true;
+    private float _lastChunkTopY = -3;
 
     void Update()
     {
-        if (isInitial)
+        if (_isInitial)
         {
-            SpawnChunk(true);
-            isInitial = false;
+            SpawnInitialChunks();
+            _isInitial = false;
         }
     }
 
-    public void SpawnChunk(bool isInitial)
+
+    private void SpawnInitialChunks()
     {
-        if (isInitial)
+        int initialChunksCount = 5;
+        for (int i = 0; i < initialChunksCount; i++)
         {
-            for (int i = 0; i < 3; i++)
+            SpawnChunk();
+        }
+    }
+
+    public void SpawnChunk()
+    {
+        if (_isInitial)
+        {
+            if (chunkPrefab != null)
             {
-                // Generar spawn jump 10, -20, -10 debajo de Y
-                float spawnY = 0;
+                GameObject newChunk = Instantiate(chunkPrefab, Vector3.zero, Quaternion.identity);
+                float chunkHeight = newChunk.transform.localScale.y;
 
-                switch (i)
-                {
-                    case 0:
-                        spawnY = 6;
-                        break;
-                    case 1:
-                        spawnY = -3;
-                        break;
-                    case 2:
-                        spawnY = 2;
-                        break;
-                }
+                // Coloca el chunk en la posición correcta basada en la posición del último chunk y su altura
+                float spawnY = _lastChunkTopY + chunkHeight / 2;
+                newChunk.transform.position = new Vector3(0, spawnY, 0); // Centrado en X, ajusta según tu juego
 
-                float spawnX = 0; // Centrado, ajusta según tu juego
-
-                Vector3 spawnPosition = new Vector3(spawnX, spawnY, 0);
-                if (chunkPrefab != null)
-                    Instantiate(chunkPrefab, spawnPosition, Quaternion.identity);
+                // Actualizamos lastChunkTopY para el próximo chunk
+                _lastChunkTopY = spawnY + chunkHeight / 2;
             }
-
-            //
         }
         else
         {

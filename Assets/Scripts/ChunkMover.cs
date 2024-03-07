@@ -7,7 +7,6 @@ using Random = UnityEngine.Random;
 public class ChunkMover : MonoBehaviour
 {
     public GameObject platformPrefab;
-    public float jumpForce = 5f;
     public int gridWidth = 4;
     public int gridHeight = 3;
     public float margin = 0.5f;
@@ -16,7 +15,7 @@ public class ChunkMover : MonoBehaviour
     private List<Vector2> _gridPositions = new List<Vector2>();
     private Rigidbody2D _rb;
 
-    private Rigidbody2D leaderRb; // Variable para almacenar el Rigidbody2D del líder
+    private Rigidbody2D _leaderRb; // Variable para almacenar el Rigidbody2D del líder
 
 
     void Start()
@@ -25,7 +24,7 @@ public class ChunkMover : MonoBehaviour
         _rb.gravityScale = 0; // Desactiva la gravedad
 
         // Intenta obtener el componente Rigidbody2D del líder
-        leaderRb = GameObject.FindGameObjectWithTag("LeaderTag").GetComponent<Rigidbody2D>();
+        _leaderRb = GameObject.FindGameObjectWithTag("LeaderTag").GetComponent<Rigidbody2D>();
 
         GenerateGrid();
         PlacePlatforms();
@@ -34,10 +33,7 @@ public class ChunkMover : MonoBehaviour
     private void FixedUpdate()
     {
         // Usa el Rigidbody2D obtenido del líder
-        if (leaderRb != null)
-        {
-            _rb.velocity = leaderRb.velocity;
-        }
+        _rb.velocity = _leaderRb.velocity;
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -51,7 +47,7 @@ public class ChunkMover : MonoBehaviour
 
             if (chunk != null)
             {
-                chunk.GetComponent<ChunkSpawner>().SpawnChunk(false);
+                chunk.GetComponent<ChunkSpawner>().SpawnChunk();
             }
         }
     }

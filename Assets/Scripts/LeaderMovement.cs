@@ -21,19 +21,19 @@ public class LeaderMovement : MonoBehaviour
     void Update()
     {
         bool isJumpingUpward = _rb.velocity.y < 0;
-        // Al presionar "P", reduce la gravedad para ralentizar la caída
+        // Al presionar "P", reduce la gravedad para ralentizar la caÃ­da
         if (Input.GetKey(KeyCode.P)&& !isJumpingUpward)
         {
             _rb.gravityScale = slowGravityScale;
         }
         else
         {
-            // Restablece a la gravedad normal cuando "P" no está presionada
+            // Restablece a la gravedad normal cuando "P" no estÃ¡ presionada
             _rb.gravityScale = normalGravityScale;
         }
 
-        // Control adicional para manejar el salto o la caída
-        if (Input.GetKeyDown(KeyCode.Space)) // Puedes cambiar esto según cómo manejes el salto
+        // Control adicional para manejar el salto o la caÃ­da
+        if (Input.GetKeyDown(KeyCode.Space)) // Puedes cambiar esto segÃºn cÃ³mo manejes el salto
         {
             ChunkJump();
         }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,15 @@ public class ChunkSpawner : MonoBehaviour
     public GameObject chunkPrefab;
     private bool _isInitial = true;
     private float _lastChunkTopY = -3;
+    public float tiempoInicial = 4f;
+    private float tiempoRestante;
+
+    private bool _isCountTime = false;
+
+    private void Start()
+    {
+        ReiniciarTiempo();
+    }
 
     void Update()
     {
@@ -15,9 +25,33 @@ public class ChunkSpawner : MonoBehaviour
             SpawnInitialChunks();
             _isInitial = false;
         }
+
+        if (_isCountTime)
+        {
+            if (tiempoRestante > 0)
+            {
+                tiempoRestante -= Time.deltaTime;
+                // ActualizarTextoTiempo();
+            }
+            else
+            {
+                GameObject scripts = GameObject.FindGameObjectWithTag("ScriptFunctionsGame");
+                scripts.GetComponent<StartGame>().ShowButtonRestart();
+                _isCountTime = false;
+            }
+        }
     }
 
-
+    public void ReiniciarTiempo()
+    {
+        tiempoRestante = tiempoInicial;
+    }
+    
+    public void isStartCountTime()
+    {
+        _isCountTime = true;
+    }
+    
     private void SpawnInitialChunks()
     {
         int initialChunksCount = 5;

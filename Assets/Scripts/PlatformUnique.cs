@@ -13,12 +13,12 @@ public class PlatformUnique : MonoBehaviour
 
             if (normal == Vector2.down)
             {
-                //print
-                Debug.Log("Player collided with platform");
                 // Get object with tag
                 GameObject leader = GameObject.FindGameObjectWithTag("LeaderTag");
+                GameObject creator = GameObject.FindGameObjectWithTag("CreatorTag");
 
                 leader.GetComponent<LeaderMovement>().ChunkJump();
+                creator.GetComponent<ChunkSpawner>().ReiniciarTiempo();
             }
         }
     }

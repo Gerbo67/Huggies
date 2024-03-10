@@ -9,6 +9,8 @@ TagManager:
   - Chunk
   - CreatorTag
   - LeaderTag
+  - StartTag
+  - ScriptFunctionsGame
   layers:
   - Default
   - TransparentFX

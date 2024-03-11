@@ -4,13 +4,37 @@ using UnityEngine;
 
 public class MovimientoJugador : MonoBehaviour
 {
-    public float speed = 5.0f; // Velocidad de movimiento del escenarioe
+    public float speed = 3.0f; // Velocidad de movimiento
 
-    // Update is called once per frame
     void Update()
     {
-        float horizontalInput = Input.GetAxis("Horizontal"); // Detecta el movimiento horizontal
-        Vector3 moveDirection = new Vector3(horizontalInput, 0, 0); // Define la dirección del movimiento
-        transform.Translate(moveDirection * speed * Time.deltaTime); // Mueve el escenario en la dirección opuesta para simular el movimiento del jugador
+        // Entrada por teclado
+        float horizontalInput = Input.GetAxis("Horizontal");
+        Vector3 moveDirection = new Vector3(horizontalInput, 0, 0);
+        transform.Translate(moveDirection * speed * Time.deltaTime);
+
+        // Entrada táctil solo para dispositivos móviles
+      //  if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer) {  }
+        HandleTouchInput();
+    }
+
+    void HandleTouchInput()
+    {
+        if (Input.touchCount > 0)
+        {
+            Debug.Log("Touch Detected");
+            Touch touch = Input.GetTouch(0);
+
+            if (touch.position.x < Screen.width / 2)
+            {
+                Debug.Log("Moving Left");
+                transform.Translate(Vector3.left * speed * Time.deltaTime);
+            }
+            else if (touch.position.x > Screen.width / 2)
+            {
+                Debug.Log("Moving Right");
+                transform.Translate(Vector3.right * speed * Time.deltaTime);
+            }
+        }
     }
 }

@@ -261,6 +261,7 @@ MonoBehaviour:
   pressedScale: {x: 0.97, y: 0.97, z: 1}
   scaleDownSpeed: 30
   scaleUpSpeed: 40
+  sceneName: 
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -350,8 +351,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2015195534}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &584049067
@@ -593,7 +593,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 790356625}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: FunctionButtonsMenu, Assembly-CSharp
+        m_MethodName: LoadScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &790356625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -648,6 +660,7 @@ MonoBehaviour:
   pressedScale: {x: 0.97, y: 0.97, z: 1}
   scaleDownSpeed: 30
   scaleUpSpeed: 40
+  sceneName: GamePlay
 --- !u!1 &845766600
 GameObject:
   m_ObjectHideFlags: 0
@@ -988,6 +1001,7 @@ MonoBehaviour:
   pressedScale: {x: 0.97, y: 0.97, z: 1}
   scaleDownSpeed: 30
   scaleUpSpeed: 40
+  sceneName: 
 --- !u!1 &1831588879
 GameObject:
   m_ObjectHideFlags: 0
@@ -1243,7 +1257,7 @@ RectTransform:
   - {fileID: 790356622}
   - {fileID: 30505042}
   - {fileID: 1422472413}
-  m_Father: {fileID: 519420032}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1355,5 +1369,6 @@ Canvas:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 2015195534}
   - {fileID: 519420032}
   - {fileID: 1325250566}

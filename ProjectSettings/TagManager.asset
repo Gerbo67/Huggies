@@ -9,12 +9,41 @@ TagManager:
   - Chunk
   - CreatorTag
   - LeaderTag
+  - StartTag
+  - ScriptFunctionsGame
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
   - Water
+  - Water
   - UI
+  - Chunks
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   m_SortingLayers:
   - name: Default
     uniqueID: 0

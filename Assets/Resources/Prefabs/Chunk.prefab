@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4191255759632370998}
   - component: {fileID: -8783585573293320974}
   - component: {fileID: 9075107444764913477}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Chunk
   m_TagString: Chunk
   m_Icon: {fileID: 0}
@@ -48,7 +48,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   platformPrefab: {fileID: 5101689924862422599, guid: e85a4e58df5af1a4ea255cbd19b58a3b, type: 3}
-  jumpForce: 5
   gridWidth: 4
   gridHeight: 3
   margin: 0.5
@@ -94,7 +93,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 17a9d79d3808c4e4b880260672d33f16, type: 3}
-  m_Color: {r: 1, g: 0, b: 0.18375254, a: 0.3882353}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

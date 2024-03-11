@@ -20,8 +20,7 @@ public class LeaderMovement : MonoBehaviour
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
-        _rb.gravityScale = normalGravityScale;
-        bool isJumpingUpward = _rb.velocity.y > 0;
+        _rb.gravityScale = 0;
     }
 
     // Update is called once per frame
@@ -57,31 +56,34 @@ public class LeaderMovement : MonoBehaviour
         }
         if (previousTouchCount == 2 && Input.touchCount < 2) // Detecta cuando los dedos se levantan de 2 a menos de 2
         {
-            ChunkJump(); // Realiza un salto automático
+            ChunkJump(); // Realiza un salto automï¿½tico
         }
-        previousTouchCount = Input.touchCount; // Actualiza el contador de toques para el próximo frame
+        previousTouchCount = Input.touchCount; // Actualiza el contador de toques para el prï¿½ximo frame
     }
+
+
     void AjustarLaGravedad()
     {
         bool isJumpingUpward = _rb.velocity.y > 0;
-        // Al presionar "P", reduce la gravedad para ralentizar la caída
+        // Al presionar "P", reduce la gravedad para ralentizar la caï¿½da
         if (isTouchInputActive && Input.touchCount == 2 && isJumpingUpward)
         {
             _rb.gravityScale = slowGravityScale;
         }
-        else if (isKeyboardInputActive && Input.GetKey(KeyCode.P)&&isJumpingUpward)
-        {
-            _rb.gravityScale = slowGravityScale;
-        }
-        else
-        {
+        else if (isKeyboardInputActive && Input.GetKey(KeyCode.P)&&isJumpingUpward){
+
             _rb.gravityScale = normalGravityScale;
         }
-
     }
+    //Funcion que mueve la gravedad a 1
+    public void GravityStartChange()
+    {
+        _rb.gravityScale = _normalGravityScale;
+    }
+
     public void ChunkJump()
     {
-        if (_rb.gravityScale == normalGravityScale)
+        if (_rb.gravityScale == _normalGravityScale)
         {
             _rb.velocity = Vector2.zero;
             _rb.AddForce(Vector2.down * jumpForce, ForceMode2D.Impulse);

@@ -5,11 +5,6 @@ using UnityEngine;
 
 public class PlatformUnique : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
@@ -18,19 +13,13 @@ public class PlatformUnique : MonoBehaviour
 
             if (normal == Vector2.down)
             {
-                //print
-                Debug.Log("Player collided with platform");
                 // Get object with tag
                 GameObject leader = GameObject.FindGameObjectWithTag("LeaderTag");
+                GameObject creator = GameObject.FindGameObjectWithTag("CreatorTag");
 
                 leader.GetComponent<LeaderMovement>().ChunkJump();
+                creator.GetComponent<ChunkSpawner>().ReiniciarTiempo();
             }
         }
-    }
-
-
-    // Update is called once per frame
-    void Update()
-    {
     }
 }

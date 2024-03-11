@@ -13,7 +13,7 @@ public class MovimientoJugador : MonoBehaviour
         Vector3 moveDirection = new Vector3(horizontalInput, 0, 0);
         transform.Translate(moveDirection * speed * Time.deltaTime);
 
-        // Entrada táctil solo para dispositivos móviles
+        // Entrada tï¿½ctil solo para dispositivos mï¿½viles
       //  if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer) {  }
         HandleTouchInput();
     }

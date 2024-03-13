@@ -50,7 +50,8 @@ MonoBehaviour:
   platformPrefab: {fileID: 5101689924862422599, guid: e85a4e58df5af1a4ea255cbd19b58a3b, type: 3}
   gridWidth: 4
   gridHeight: 3
-  margin: 0.5
+  margin: 0.51
+  ancho: 0.9
 --- !u!212 &4191255759632370998
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -91,8 +92,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 17a9d79d3808c4e4b880260672d33f16, type: 3}
+  m_SortingOrder: 1
+  m_Sprite: {fileID: -1267627481, guid: 3245ec0000209f24995b1a66056eb072, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
@@ -135,18 +136,18 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.13474655, y: 0.15880877}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 7.8, y: 3.7}
     newSize: {x: 5, y: 5}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 5.5621433, y: 1.3176175}
   m_EdgeRadius: 0
 --- !u!50 &9075107444764913477
 Rigidbody2D:

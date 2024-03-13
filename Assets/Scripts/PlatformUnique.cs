@@ -13,13 +13,40 @@ public class PlatformUnique : MonoBehaviour
 
             if (normal == Vector2.down)
             {
-                // Get object with tag
+                // Corrección aquí: Usar FindGameObjectWithTag para obtener un solo GameObject
                 GameObject leader = GameObject.FindGameObjectWithTag("LeaderTag");
-                GameObject creator = GameObject.FindGameObjectWithTag("CreatorTag");
-
-                leader.GetComponent<LeaderMovement>().ChunkJump();
-                creator.GetComponent<ChunkSpawner>().ReiniciarTiempo();
+                if (leader != null)
+                {
+                    // Asegúrate de que el GameObject 'leader' tenga un componente 'LeaderMovement' antes de llamar a 'ChunkJump'
+                    LeaderMovement leaderMovement = leader.GetComponent<LeaderMovement>();
+                    if (leaderMovement != null)
+                    {
+                        leaderMovement.ChunkJump();
+                    }
+                    // Suponiendo que quieras llamar a 'ReiniciarTiempo' en otro GameObject etiquetado como 'CreatorTag'
+                    GameObject creator = GameObject.FindGameObjectWithTag("CreatorTag");
+                    ChunkSpawner chunkSpawner = creator?.GetComponent<ChunkSpawner>();
+                    chunkSpawner?.ReiniciarTiempo();
+                }
             }
         }
     }
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            // Corrección: Cambiar FindGameObjectsWithTag por FindGameObjectWithTag
+            GameObject leader = GameObject.FindGameObjectWithTag("LeaderTag");
+            if (leader != null)
+            {
+                // Obtiene el componente LeaderMovement y llama a EnableSlowMotionAndJump con false
+                LeaderMovement leaderMovement = leader.GetComponent<LeaderMovement>();
+                if (leaderMovement != null)
+                {
+                    leaderMovement.EnableSlowMotionAndJump(false);
+                }
+            }
+        }
+    }
+
 }

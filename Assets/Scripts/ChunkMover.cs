@@ -12,6 +12,7 @@ public class ChunkMover : MonoBehaviour
     public float margin = 0.5f;
     private float _gridBoxWidth = 0;
     private float _gridBoxHeight = 0;
+    public float ancho = 5f;
     private List<Vector2> _gridPositions = new List<Vector2>();
     private Rigidbody2D _rb;
 
@@ -104,7 +105,7 @@ public class ChunkMover : MonoBehaviour
 
                 // Ajusta el tamaño de la plataforma
                 platform.transform.localScale = new Vector3(_gridBoxWidth - margin * (gridWidth) / (gridWidth - 1),
-                    _gridBoxHeight - margin * (gridHeight) / (gridHeight - 1.2f), 1);
+                    _gridBoxHeight - margin * (gridHeight) / (gridHeight - ancho), 1);
 
                 // Ajuste tamaño del collider
                 BoxCollider2D platformCollider = platform.GetComponent<BoxCollider2D>();
@@ -112,7 +113,7 @@ public class ChunkMover : MonoBehaviour
                 {
                     // El tamaño del collider debe ser ajustado para coincidir con la escala visual de la plataforma.
                     // Como la plataforma ya ha sido escalada, establecemos el tamaño del collider para que coincida con esa escala.
-                    platformCollider.size = new Vector2(1, 1); // Restablece a 1, 1 como base para el cálculo.
+                    platformCollider.size = new Vector2(4, 2); // Restablece a 1, 1 como base para el cálculo.
                 }
 
 

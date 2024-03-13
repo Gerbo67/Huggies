@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,84 +10,88 @@ public class LeaderMovement : MonoBehaviour
     public float normalGravityScale = 1f;
     public float slowGravityScale = 0.001f;
 
-    //Variables que controlan la entrada mas reciente
+    private bool canSlowMotionAndJump = false;
 
-    private bool isTouchInputActive = false;
     private bool isKeyboardInputActive = false;
-
+    private bool isTouchInputActive = false;
     private int previousTouchCount = 0;
+    private bool shouldJump = false;
 
-    // Start is called before the first frame update
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
         _rb.gravityScale = 0;
     }
 
-    // Update is called once per frame
     void Update()
     {
         MovimientoTeclado();
         MovimientoTouch();
-        AjustarLaGravedad();
+        //AjustarLaGravedad();
     }
-    
+
     void MovimientoTeclado()
     {
-        bool isJumpingUpward = _rb.velocity.y > 0;
-        if (Input.GetKey(KeyCode.P))
+        bool isMovingDownward = _rb.velocity.y > 0; // Verifica si el movimiento es hacia abajo
+        if (Input.GetKeyDown(KeyCode.P) && isMovingDownward)
         {
             isKeyboardInputActive = true;
-            isTouchInputActive = false;
-        }else if(Input.GetKeyUp(KeyCode.P)&&isJumpingUpward) //Detecta cuando la tecla se levanta
+            _rb.gravityScale = slowGravityScale;
+            shouldJump = true;
+        }
+        else if (Input.GetKeyUp(KeyCode.P) && shouldJump)
         {
             isKeyboardInputActive = false;
+            shouldJump = false;
             ChunkJump();
         }
-                
     }
 
     void MovimientoTouch()
     {
-        if (Input.touchCount > 0)
+        bool isMovingDownward = _rb.velocity.y > 0; // Verifica si el movimiento es hacia abajo
+        if (Input.touchCount == 2 && isMovingDownward)
         {
-
             isTouchInputActive = true;
-            isKeyboardInputActive = false;
-        }
-        if (previousTouchCount == 2 && Input.touchCount < 2) // Detecta cuando los dedos se levantan de 2 a menos de 2
-        {
-            ChunkJump(); // Realiza un salto autom�tico
-        }
-        previousTouchCount = Input.touchCount; // Actualiza el contador de toques para el pr�ximo frame
-    }
-
-
-    void AjustarLaGravedad()
-    {
-        bool isJumpingUpward = _rb.velocity.y > 0;
-        // Al presionar "P", reduce la gravedad para ralentizar la ca�da
-        if (isTouchInputActive && Input.touchCount == 2 && isJumpingUpward)
-        {
             _rb.gravityScale = slowGravityScale;
+            shouldJump = true;
         }
-        else if (isKeyboardInputActive && Input.GetKey(KeyCode.P)&&isJumpingUpward){
+        else if (previousTouchCount == 2 && Input.touchCount < 2 && shouldJump)
+        {
+            isTouchInputActive = false;
+            shouldJump = false;
+            ChunkJump();
+        }
+        previousTouchCount = Input.touchCount;
+    }
 
-            _rb.gravityScale = normalGravityScale;
-        }
-    }
-    //Funcion que mueve la gravedad a 1
-    public void GravityStartChange()
+   /* void AjustarLaGravedad()
     {
-        _rb.gravityScale = _normalGravityScale;
-    }
+        // Si no hay entradas activas, restablece la gravedad a normal
+        if (!isKeyboardInputActive && !isTouchInputActive)
+        {
+            _rb.gravityScale = 0;
+        }
+    }*/
 
     public void ChunkJump()
     {
-        if (_rb.gravityScale == _normalGravityScale)
+        _rb.velocity = Vector2.zero;
+        _rb.AddForce(Vector2.down * jumpForce, ForceMode2D.Impulse);
+        _rb.gravityScale = normalGravityScale;
+    }
+
+    public void GravityStartChange()
+    {
+        _rb.gravityScale = normalGravityScale;
+    }
+
+    public void EnableSlowMotionAndJump(bool enable)
+    {
+        canSlowMotionAndJump = enable;
+        if (!enable)
         {
-            _rb.velocity = Vector2.zero;
-            _rb.AddForce(Vector2.down * jumpForce, ForceMode2D.Impulse);
+            _rb.gravityScale = normalGravityScale;
         }
     }
 }
